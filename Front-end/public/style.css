@@ -1,0 +1,29 @@
+.show > .colwhat {
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+  transition: all 0.5s ease-in-out;
+  max-height: 900px;
+  visibility: visible;
+  opacity: 1;
+  }
+  
+  .colwhat {
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.5s ease-in-out;
+  display: block;
+  max-height:0px;
+  margin-top: 0;
+  visibility:hidden;
+  opacity:0;
+  padding:0;
+  overflow: hidden;
+  }
+  .navbar-nav > li{
+    padding-left:10px;
+    padding-right:5px;
+  }

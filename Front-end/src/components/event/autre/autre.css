@@ -1,0 +1,20 @@
+
+.bottom-body-img{
+    height: 140px;
+    width: 100%;
+}
+
+.bottom-body-titre{
+    width: 28ch;
+    height: 145px;
+    overflow-wrap: break-word;
+    padding: .5rem;
+    text-overflow: ellipsis;
+}
+
+
+@media all and (max-width: 700px) {
+    .bottom{
+        width: clamp(500px, 100%, 1200px);
+    }
+}

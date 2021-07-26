@@ -1,0 +1,32 @@
+.bg-dark {
+    background-color: #5c89b5!important;
+  }
+  
+  .navbar {
+    justify-content: center;
+  }
+  
+  .navbar-dark .navbar-nav .nav-link {
+    color: #09121b;
+  }
+  
+  .container{
+    margin:0 !important;
+    padding : 0 !important;
+  }
+  
+  .navbar-brand{
+    margin: 0 46px 0 0 !important;
+    color: #09121b !important;
+  }
+  
+  .navbar-expand-lg .navbar-nav .nav-link {
+    padding-right: 0.5rem;
+    padding-left: 1rem;
+  }
+  
+  .dropdown-toggle::after {
+    display: none !important;
+  }
+  
+  
