@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 26 juil. 2021 à 09:26
+-- Généré le : sam. 31 juil. 2021 à 11:24
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -20,6 +20,34 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `miniprojet`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `citizen`
+--
+
+CREATE TABLE `citizen` (
+  `Citizen_Id` int(11) NOT NULL,
+  `Citizen_Last_Name` text NOT NULL,
+  `Citizen_First_Name` text NOT NULL,
+  `Citizen_Cne` text NOT NULL,
+  `Citizen_Address` text NOT NULL,
+  `Citizen_Email` text NOT NULL,
+  `Citizen_Tel` text NOT NULL,
+  `Citizen_password` text NOT NULL,
+  `school_id` int(11) NOT NULL,
+  `Email_verified` tinyint(1) NOT NULL,
+  `Valid_account` tinyint(1) NOT NULL,
+  `Email_verifie_key` int(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `citizen`
+--
+
+INSERT INTO `citizen` (`Citizen_Id`, `Citizen_Last_Name`, `Citizen_First_Name`, `Citizen_Cne`, `Citizen_Address`, `Citizen_Email`, `Citizen_Tel`, `Citizen_password`, `school_id`, `Email_verified`, `Valid_account`, `Email_verifie_key`) VALUES
+(55, 'elee', 'mouad', '', '', 'test2.0elaich@gmail.com', '', '$2y$10$Qodx1AzyT1xYzsgbqf/AM.uzQcdryzJnLSYR02n5vhjXQ5j4G/eT.', 2, 1, 0, 28973544);
 
 -- --------------------------------------------------------
 
@@ -52,9 +80,37 @@ INSERT INTO `events` (`id_event`, `Event_Designation`, `Event_Description`, `Sta
 (4, 'Nullam egestas porta lorem, vestibulum tristique leo sodales nec. Quisque ac finibus mauris. Nulla faucibus turpis sit amet pulvinar rutrum. ', 'Meconnais enfantent et apprendre je metairies.', '04-22-2021', '04-26-2021', 'aaaaaaaaaaaaa', 'https://i.ibb.co/0fTWHJY/event4.jpg', '', '', '', ''),
 (5, 'Nullam egestas porta lorem, vestibulum tristique leo sodales nec. Quisque ac finibus mauris. Nulla faucibus turpis sit amet pulvinar rutrum. ', 'Il remarquait et en survivants eclaireurs legerement qu. Animaux nos humains fer fut ramassa encourt. Car vous fort etat peut voie net cree sur non. En mystiques attachent cesserent convertir indicible superieur le. Arbres ne dinent je au police legion. Tot depourvus tangibles parlaient apprendre corbeille vie inassouvi. Du elle elle tete ca je pour veut.', '11-12-2021', '11-18-2021', 'bbbbbbbbbbb', 'https://i.ibb.co/kgjbPbN/event5.jpg', '', '', '', '');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `schools`
+--
+
+CREATE TABLE `schools` (
+  `id_school` int(11) NOT NULL,
+  `school_name` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `schools`
+--
+
+INSERT INTO `schools` (`id_school`, `school_name`) VALUES
+(2, 'aaa'),
+(3, 'bbb'),
+(4, 'ccc');
+
 --
 -- Index pour les tables déchargées
 --
+
+--
+-- Index pour la table `citizen`
+--
+ALTER TABLE `citizen`
+  ADD PRIMARY KEY (`Citizen_Id`),
+  ADD UNIQUE KEY `email_unique` (`Citizen_Email`) USING HASH,
+  ADD KEY `foreign key` (`school_id`);
 
 --
 -- Index pour la table `events`
@@ -63,14 +119,42 @@ ALTER TABLE `events`
   ADD PRIMARY KEY (`id_event`);
 
 --
+-- Index pour la table `schools`
+--
+ALTER TABLE `schools`
+  ADD PRIMARY KEY (`id_school`);
+
+--
 -- AUTO_INCREMENT pour les tables déchargées
 --
+
+--
+-- AUTO_INCREMENT pour la table `citizen`
+--
+ALTER TABLE `citizen`
+  MODIFY `Citizen_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT pour la table `events`
 --
 ALTER TABLE `events`
   MODIFY `id_event` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `schools`
+--
+ALTER TABLE `schools`
+  MODIFY `id_school` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `citizen`
+--
+ALTER TABLE `citizen`
+  ADD CONSTRAINT `foreign key` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id_school`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
