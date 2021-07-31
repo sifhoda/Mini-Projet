@@ -1,0 +1,9 @@
+.validation_email_parent {
+    padding: 20px;
+    margin: 30px 0;
+}
+
+.email-valide{
+    color: rgb(33, 214, 214) !important;
+    border-color:rgb(33, 214, 214) !important;
+}

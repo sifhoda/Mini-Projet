@@ -12,7 +12,6 @@ function Conteneur() {
     const [events_number,setEvents_number]=useState(0);
 
     useEffect( () => {
-        
         const geteventsPerPage = async () => {
             var bodyFormData = new FormData();
             bodyFormData.append('page',1);

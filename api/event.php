@@ -2,18 +2,9 @@
     header('Access-Control-Allow-Origin: *');
     header("Access-Control-Allow-Headers: *");
 
-    $host = "localhost"; 
-    $user = "root"; 
-    $password = ""; 
-    $dbname = "miniprojet"; 
+    include dirname(__DIR__)."/api/mysql/DBconnexion.php" ;
+
     @$id_event = (int)$_POST["id"];
-
-    $con = mysqli_connect($host, $user, $password,$dbname);
-
-    if (!$con) {
-      die("Connection failed: " . mysqli_connect_error());
-    }
-
     $method = $_SERVER['REQUEST_METHOD'];
     
     switch ($method) {

@@ -30,3 +30,7 @@
   }
   
   
+  .disabled_url{
+    pointer-events: none;
+    opacity: 0.4;
+  }
