@@ -1,31 +1,44 @@
-import './signin.css'
+import './signin.css';
+import Showing_Recaptcha from '../recaptcha';
+
 import React,{useState,useEffect} from 'react'
 import { Row,InputGroup,Spinner } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form'
 import { faEnvelope,faEye,faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import { ReCaptcha } from 'react-recaptcha-google'
+import { useHistory } from 'react-router-dom';
+
+
+
 
 function Signin(){
+    const history = useHistory();
 
-    const [validated, setValidated] = useState(false);
+    const [validated_form, setvalidated_form] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [wait_submitting,setWait_submitting] = useState(false);
-
     const [errmail,setErrmail]=useState('');
+
     const [nom,setNom]=useState('');
     const [prenom,setPrenom]=useState('');
     const [email,setEmail]=useState('');
     const [etabl, setEtabl] = useState('');
+
     const [mdp,setMdp] = useState('');
     const [cfmdp,setCfmdp] = useState('');
+    const [show_mdp,setShow_mdp]=useState(false);
+    const [show_cfmdp,setShow_cfmdp]=useState(false);
 
     const [etabls,setEtabls] = useState([]);
     const [recaptcha_token,setRecaptcha_token] = useState('');
+    const [recaptcha_loaded,setRecaptcha_loaded] = useState(false);
     const [verification_recaptcha,setverification_recaptcha]=useState('');
-    const [show_mdp,setShow_mdp]=useState(false);
-    const [show_cfmdp,setShow_cfmdp]=useState(false);
+    
+
+
+
+    
 
 ////////////////////////////
 //////////////////////validation mdp / email
@@ -48,17 +61,24 @@ function Signin(){
         return (submitted && mdp!="" && (cfmdp=="" || cfmdp!=mdp))
     }
 
+
+    function Validate_form_infos(form){
+        return (form.checkValidity() === true && recaptcha_token) && 
+               (!invalid_email_pattern(email) && !validation_confirm_mdp()) && (mdp.length>=8);
+    }
 /////////////////////////////////////////
 
 /////////////////////////////////////
 ///////////////////////////// initialisation établissements
+
     useEffect( () => {
 
-        if (window.grecaptcha ==undefined || window.grecaptcha.render==undefined) {
-            window.location.reload();
-        }else{
-            if(window.grecaptcha.ready) window.grecaptcha.reset();
-         }
+        const loading_recaptcha = async () => {
+            setTimeout(()=>setRecaptcha_loaded(true),1000);
+        }
+        loading_recaptcha();
+
+
         const getschools= async () => {
             var bodyFormData = new FormData();
             bodyFormData.append('schools',true);
@@ -82,13 +102,12 @@ function Signin(){
 
 ///////////////////////////
 /////////////////////////recaptcha functions
-    function onloadCallback() {
-        window.grecaptcha.reset();
-    };
+
     function called(response) {
         if(response){
             console.log('Done!!!!');
             setRecaptcha_token(response);
+            setverification_recaptcha('');
         }
      };
 //////////////////////////////
@@ -97,12 +116,12 @@ function Signin(){
 ////////////////////////////////Submit
     function Submit( event ) {
         setSubmitted(true);
-        setValidated(true);
+        setvalidated_form(true);
         setWait_submitting(true);
-        const form = event.currentTarget;
+
         event.preventDefault();
         
-        if ((form.checkValidity() === true && recaptcha_token) && (!invalid_email_pattern(email) && !validation_confirm_mdp() && mdp.length>=8)){
+        if (Validate_form_infos(event.currentTarget)){
             let formData = new FormData();
             formData.append('nom', nom);
             formData.append('prenom', prenom);
@@ -134,23 +153,32 @@ function Signin(){
                     }
                 
                 }else{
-                    localStorage.setItem('token',response.data.trim());
-                    window.location.href="http://localhost:3000/verification";
+                    history.push({
+                        pathname: "/verification",
+                        state: { 
+                            user_email : email,
+                            account_valid : 0
+                        }
+                      });
                 } 
 
             })
             .catch(function (response) {
                 console.log(response)
             });
+        }else{
+            setWait_submitting(false);
         }    
-        setWait_submitting(false);
 
     }
+
+  
 //////////////////////////////
 
     return (
+
       <div className="Signin_form">
-        <Form noValidate validated={validated} className="form" onSubmit={Submit.bind(this)}>
+        <Form noValidate validated={validated_form} className="form" onSubmit={Submit.bind(this)}>
             <h1>S'Inscrire</h1>
             <Row className="mb-12">
               
@@ -283,11 +311,8 @@ function Signin(){
 
 
                 <div className="col-md-10 recaptchu">
-                    <ReCaptcha
-                        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                        onloadCallback={onloadCallback.bind()}
-                        verifyCallback={called.bind()}
-                    />
+                    <Showing_Recaptcha recaptcha_loaded={recaptcha_loaded}  called={called}/>
+
                     <div className={submitted && (!recaptcha_token || verification_recaptcha) ? "invalid-champ" : "valid-champ"}>
                         {verification_recaptcha ? verification_recaptcha : "Néccessaire !!!"}
                     </div> 
@@ -306,6 +331,7 @@ function Signin(){
             }
             
         </Form>
+
       </div>
     );
     

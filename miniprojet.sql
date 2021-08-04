@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 31 juil. 2021 à 11:24
+-- Généré le : mer. 04 août 2021 à 10:01
 -- Version du serveur :  10.4.11-MariaDB
 -- Version de PHP : 7.4.5
 
@@ -20,6 +20,30 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `miniprojet`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `admin`
+--
+
+CREATE TABLE `admin` (
+  `Admin_Id` int(11) NOT NULL,
+  `Admin_First_Name` text NOT NULL,
+  `Admin_Last_Name` text NOT NULL,
+  `Admin_Email` text NOT NULL,
+  `Admin_Cne` text NOT NULL,
+  `Admin_Tel` text NOT NULL,
+  `Admin_Address` text NOT NULL,
+  `Admin_Password` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `admin`
+--
+
+INSERT INTO `admin` (`Admin_Id`, `Admin_First_Name`, `Admin_Last_Name`, `Admin_Email`, `Admin_Cne`, `Admin_Tel`, `Admin_Address`, `Admin_Password`) VALUES
+(1, 'admin', 'admin', 'elaich.test@gmail.com', 'eemmmm', '06xxxxxxxxx', 'zzzzzzzzzzz', '$2y$10$aKqHDfDBOJnzZsFNVOaSJuHLMD0AZcS9EQsplRBftzhfoxlAdKQ.C');
 
 -- --------------------------------------------------------
 
@@ -47,7 +71,16 @@ CREATE TABLE `citizen` (
 --
 
 INSERT INTO `citizen` (`Citizen_Id`, `Citizen_Last_Name`, `Citizen_First_Name`, `Citizen_Cne`, `Citizen_Address`, `Citizen_Email`, `Citizen_Tel`, `Citizen_password`, `school_id`, `Email_verified`, `Valid_account`, `Email_verifie_key`) VALUES
-(55, 'elee', 'mouad', '', '', 'test2.0elaich@gmail.com', '', '$2y$10$Qodx1AzyT1xYzsgbqf/AM.uzQcdryzJnLSYR02n5vhjXQ5j4G/eT.', 2, 1, 0, 28973544);
+(66, 'elee', 'mouad', '', '', 'mouad@agent.com', '', '$2y$10$m51nLMw3tNUQOidQqyI0veqRQ/qK313bbcmmp9oUK3AdXyVRWF6Z.', 3, 1, 1, 88191594),
+(67, 'Bennis', 'Mehdi', '', '', 'hdi2021@agent.com', '', '$2y$10$Spiufy/OWgxjIMzINKuky.BKdZuy6WGP14Rt6lr7CqupcvKiFCCiO', 2, 0, 0, 96162195),
+(68, 'Othmane', 'OUTAMA', '', '', 'outama.othmane@gmail.com', '', '$2y$10$QTXTpHMnryfqej58WR2DFO9menWcZrHpgfJE6SEg.gBumHYK2UdrW', 2, 1, 1, 82518150),
+(69, 'elee', 'mouaddd', '', '', 'mouaddd@agent.com', '', '$2y$10$kKrzNULAFuA7LnCBPxWVkuHxJ3kGqr2dBow2KCGnZQcH7mxmX0yXe', 4, 0, 0, 17002341),
+(70, 'Othmane', 'OUTAMA', '', '', 'imad@agent.com', '', '$2y$10$/oqL0lGgCxOtGlbOSjxRcuMt9O3dv5cawY.h90EFEc3j/FFnz1Diq', 3, 0, 0, 14762535),
+(71, 'rrrrr', 'eeeeee', '', '', 'linkin@gmail.com', '', '$2y$10$bQKiXtCQi1/Z9Z3dq388mu7kBT5gIQXra5nJxzTpYx8MQf/yhD5Mu', 3, 0, 0, 91027587),
+(72, 'test', 'test', '', '', 'test.test@llll.com', '', '$2y$10$fMElXRe/kXP7rCxoEA62A.ibXyEa/xKZVGWUeziz.DcLKOth8tKkW', 2, 1, 1, 67984717),
+(73, 'Bennis', 'Mehdi', '', '', 'housn.iff@ggggg.com', '', '$2y$10$jtqidaKHhDM/NaF./UsYCOvQzsisxE8FSMIBArTQqpYQwXefRSafe', 3, 1, 0, 26737502),
+(74, 'zzzzzzzzzz', 'yyyyy', '', '', 'zzzz.yyyy@gmail.com', '', '$2y$10$g7bsxQea23oYoVcny4PYaOJLfUXi5rwXP3Fv5QQGa7tBg3hk1yo4q', 3, 0, 0, 56739184),
+(75, 'elee', 'mouad', '', '', 'housni@agent.com', '', '$2y$10$NUUhqz36QRc7O4JE.In94.ajMClVybwDoJwNN3UearbjEWOV3csCy', 3, 1, 1, 87890279);
 
 -- --------------------------------------------------------
 
@@ -105,6 +138,14 @@ INSERT INTO `schools` (`id_school`, `school_name`) VALUES
 --
 
 --
+-- Index pour la table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`Admin_Id`),
+  ADD UNIQUE KEY `email_unique` (`Admin_Email`) USING HASH,
+  ADD UNIQUE KEY `cne_unique` (`Admin_Cne`) USING HASH;
+
+--
 -- Index pour la table `citizen`
 --
 ALTER TABLE `citizen`
@@ -129,10 +170,16 @@ ALTER TABLE `schools`
 --
 
 --
+-- AUTO_INCREMENT pour la table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `Admin_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT pour la table `citizen`
 --
 ALTER TABLE `citizen`
-  MODIFY `Citizen_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `Citizen_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT pour la table `events`

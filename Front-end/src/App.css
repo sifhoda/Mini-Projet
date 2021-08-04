@@ -1,0 +1,12 @@
+.validation_msg{
+    margin: 30px auto;
+    font-size: 18pt;
+    color: darkgrey;
+    text-align: center;
+}
+
+.validation_msg h2{
+    text-align: center;
+    color: rgb(85, 85, 85);
+    margin-bottom: 10px;
+}

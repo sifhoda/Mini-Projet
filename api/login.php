@@ -1,7 +1,7 @@
 <?php
     function email_validation($email){
       if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $msg = array('error' => "Invalid email !!!"); //etc
+        $msg = array('error' => "Invalid email !!!"); 
         echo json_encode($msg);
         die();
       }
@@ -56,11 +56,23 @@
         case 'GET':
           break;
         case 'POST':
-          email_validation(@$_POST["email"]); 
+          email_validation(@$_POST["email"]);
+          $check_infos_admin=verifie_admin_infos($user,$con);
           if($valide_recaptcha){
-            if(verifie_user_infos($user,$con)){
-                get_infos_user_by_email($user,$con);
-                echo $jwt->jwt_encode_data($user);
+            if(!$check_infos_admin){
+              if(verifie_user_infos($user,$con)){
+                   $tab1 = array('token' => $jwt->jwt_encode_data($user));
+                   $tab2 = array('Citizen_Id' => $user->get_id(),'Citizen_Last_Name' => $user->get_nom(),'Citizen_First_Name' => $user->get_prenom());
+                   echo json_encode(array_merge($tab1,$tab2,verifie_user_infos($user,$con)));
+               }
+            }else{
+              if(gettype($check_infos_admin) !== "array"){
+                $msg = array('admin_token' => $jwt->jwt_encode_data($user));
+                echo json_encode($msg);
+              }else{
+                echo json_encode($check_infos_admin);
+              }
+                
             }
           }
         break;

@@ -8,37 +8,49 @@ import Evenement from './components/event/evenement';
 import Conteneur from './components/page1/conteneur';
 import Login from './components/login/login';
 import Signin from './components/signin/singnin';
-import Email_verfication from './components/signin/email_verfication/email_verfication';
+import Email_verfication from './components/email_verfication/email_verfication';
 import { BrowserRouter as Router ,Route} from 'react-router-dom';
+import ExampleComponent from './components/recaptcha'
+import Admin_home from './components/admin/admin_home';
+import Account_state from './components/account_state';
+import { Auth_provider } from './contexts/user_auth_context';
+
 
 
 
 function App() {
-  const [isAuthentified,setIsAuthentified] = useState(false);
+
+  const [user_connected,setUser_connected] = useState(false);
+  const [admin_connected,setAdmin_connected] = useState(false);
+  const [apache,setapache] = useState(false);
 
   useEffect( () => {
     const isAuth = async () => {
-        if(localStorage.getItem('token')) setIsAuthentified(true);
+        if(localStorage.getItem('user_connected')) setUser_connected(true);
+        if(localStorage.getItem('admin_token')) setAdmin_connected(true);
     }
+    
     isAuth();
+
   });
 
-  function componentDidMount() {
-    loadReCaptcha();
-  }
-  
   return (
-    <Router>
-    <>
-        <Menubar auth={isAuthentified} />
-        <Route path="/evenement/:id" component={Evenement} auth={isAuthentified} />
-        <Route path="/evenements" component={Conteneur} auth={isAuthentified} />
-        <GuardRoute path="/inscription" component={Signin} auth={isAuthentified} />
-        <GuardRoute path="/authentification" component={Login} auth={isAuthentified} />
-        <Route path="/verification" component={Email_verfication} />
+    <Auth_provider>
+      <Router>
 
-    </>
-    </Router>
+          <Route
+            path='/*'
+            component={() => admin_connected ? <Admin_home /> : <Menubar auth={user_connected}/>}
+          />
+          <Route path="/evenement/:id" component={Evenement} auth={user_connected} />
+          <Route path="/evenements" component={Conteneur} auth={user_connected} />
+          <GuardRoute path="/inscription" component={Signin} auth={user_connected || admin_connected} />
+          <GuardRoute path="/authentification" component={Login} auth={user_connected || admin_connected} />
+          <Route path="/verification" render={(props) => <Email_verfication {...props}/>}/>
+          <GuardRoute path="/account_status" component={Account_state} auth={user_connected || admin_connected} />
+
+      </Router>
+    </Auth_provider>
   );
 }
 

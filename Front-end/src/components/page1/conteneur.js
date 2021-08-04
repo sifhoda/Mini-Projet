@@ -2,7 +2,6 @@ import './page1.css'
 import React,{useState,useEffect} from 'react'
 import axios from 'axios';
 import Event from './event';
-import ReactDOM from "react-dom";
 import Pagination from "react-js-pagination";
 
 function Conteneur() {

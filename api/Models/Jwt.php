@@ -1,9 +1,10 @@
 <?php
     
-    include dirname(__DIR__).'../php-jwt/src/JWT.php';
+   require_once dirname(__DIR__).'../php-jwt/src/JWT.php';
     use \Firebase\JWT\JWT;
+    use Firebase\JWT\SignatureInvalidException;
 
-    class Jwt_handler {
+class Jwt_handler {
         protected $jwt_secrect;
         protected $token;
         protected $issuedAt;
@@ -25,9 +26,9 @@
                 "iat" => $this->issuedAt,
                 "exp" => $this->expire,
                 "data" => array(
-                    "Citizen_Id" => $user->get_id(), 
-                    "Citizen_Last_Name" => $user->get_nom(),
-                    "Citizen_First_Name" => $user->get_prenom()
+                    "User_Id" => $user->get_id(), 
+                    "User_Last_Name" => $user->get_nom(),
+                    "User_First_Name" => $user->get_prenom()
                 )
             );
 
@@ -38,7 +39,11 @@
     
         public function jwt_decode_data($jwt_token){
             $decode = JWT::decode($jwt_token, $this->jwt_secrect, array('HS256'));
-            return get_object_vars($decode->data);
+            if($decode){
+                return get_object_vars($decode->data);
+            }else{
+                return false;
+            }
         }
 
     }

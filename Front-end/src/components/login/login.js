@@ -1,37 +1,70 @@
 import './login.css'
+import Showing_Recaptcha from '../recaptcha';
+
 import React,{useState,useEffect} from 'react'
 import { Row,InputGroup,Spinner } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form'
 import { faEnvelope,faEye,faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import { ReCaptcha } from 'react-recaptcha-google'
+import { useHistory } from 'react-router-dom';
+
+
+
+
+
+function set_local_storage(data){
+
+    if(data.admin_token){
+        localStorage.setItem('admin_token',data.admin_token.trim());
+    }else{
+        
+        let info_user = {
+            "token" : data.token.trim(),
+            "Citizen_First_Name": data.Citizen_First_Name,
+            "Citizen_Id": data.Citizen_Id,
+            "Citizen_Last_Name": data.Citizen_Last_Name
+        }
+        localStorage.setItem('user_connected',JSON.stringify(info_user));
+    }
+}
+
+
 
 
 
 function Login(){
-    
-    const [validated, setValidated] = useState(false);
+
+    const history = useHistory();
+    ////Validation vars
+    const [all_user_infos_validated,setAll_user_infos_validated] =useState(false);
+    const [validated_form, setvalidated_form] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [wait_submitting,setWait_submitting] = useState(false);
 
+    const [account_valid,setAccount_valid] = useState(1);
+
+    ////Errors vars
     const [errmail,setErrmail]=useState('');
     const [errmdp,setErrmdp]=useState('');
-    const [email,setEmail]=useState('');
 
+    //////form inputs
+    const [email,setEmail]=useState('');
     const [mdp,setMdp] = useState('');
-    const [verification_recaptcha,setverification_recaptcha]=useState('');
-    const [recaptcha_token,setRecaptcha_token] = useState('');
     const [show_mdp,setShow_mdp]=useState(false);
+
+    ///////////////Recaptcha validators
+    const [verification_recaptcha,setverification_recaptcha]=useState('');
+    const [recaptcha_loaded,setRecaptcha_loaded] = useState(false);
+    const [recaptcha_token,setRecaptcha_token] = useState('');
 
 
     useEffect(()=>{
-        if (window.grecaptcha ==undefined || window.grecaptcha.render==undefined) {
-            window.location.reload();
-        }else{
-            if(window.grecaptcha.ready) window.grecaptcha.reset();
-        }
-    },[]);
+       const loading_recaptcha = async () => {
+           setTimeout(()=>setRecaptcha_loaded(true),1000);
+       }
+       loading_recaptcha();
+    },[recaptcha_loaded]);
 
 //////////////////////////////
 /////////////email validation
@@ -53,23 +86,23 @@ function Login(){
 
 ///////////////////////////
 /////////////////////////recaptcha functions
-    function onloadCallback() {
-        window.grecaptcha.reset();
-    };
+    
+
     function called(response) {
-       if(response){
-           console.log('Done!!!!');
-           setRecaptcha_token(response);
-           setverification_recaptcha("");
-       }
+        if(response){
+            console.log('Done!!!!');
+            setRecaptcha_token(response);
+            setverification_recaptcha('');
+        }
     };
+
 ////////////////////////////
 
 /////////////////////////////
 /////////////////////////////Submit
     function Submit( event ) {
         setSubmitted(true);
-        setValidated(true);
+        setvalidated_form(true);
         setWait_submitting(true);
         const form = event.currentTarget;
         event.preventDefault();
@@ -98,8 +131,32 @@ function Login(){
                             setverification_recaptcha(response.data.error);
                             window.grecaptcha.reset();
                         }else{
-                            localStorage.setItem('token',response.data.trim());
-                            window.location.href="http://localhost:3000";
+                            if(response.data.admin_token){
+                                set_local_storage(response.data);
+                                window.location.href="http://localhost:3000/Admin_home";
+                            }else{
+                                if(response.data.email_verified!=0){
+                                    if(response.data.account_valid!=1){
+                                        setAccount_valid(response.data.account_valid);
+                                        
+                                        history.push({
+                                            pathname: '/account_status',
+                                            state: { waiting : true }
+                                          });
+                                    }else{
+                                        set_local_storage(response.data);
+                                        window.location.href="http://localhost:3000";
+                                    }
+                                }else{
+                                    history.push({
+                                        pathname: "/verification",
+                                        state: { 
+                                            user_email : email,
+                                            account_valid : response.data.account_valid
+                                        }
+                                      });
+                                }
+                            }
                         }
                     } 
                 }
@@ -108,16 +165,21 @@ function Login(){
             .catch(function (response) {
                 console.log(response)
             });
+        }else{
+            setWait_submitting(false);
         }
-        setWait_submitting(false);
         
     }
 
 ///////////////////////////////////////
 
+
+
+/////////////////////////////////////////////////
+
     return (
       <div className="login_form">
-        <Form noValidate validated={validated} onSubmit={Submit.bind(this)} className="form">
+        <Form noValidate validated={validated_form} onSubmit={Submit.bind(this)} className="form">
           <h2>Authentification</h2>
             <Row className="mb-12">
                 
@@ -171,11 +233,7 @@ function Login(){
 
 
                 <div className="col-md-10 recaptchu_login">
-                    <ReCaptcha
-                        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                        onloadCallback={onloadCallback.bind()}
-                        verifyCallback={called.bind()}
-                    />
+                    <Showing_Recaptcha recaptcha_loaded={recaptcha_loaded}  called={called}/>
                      <div className={submitted && (!recaptcha_token || verification_recaptcha) ? "invalid-champ" : "valid-champ"}>
                         {verification_recaptcha ? verification_recaptcha : "Néccessaire !!!"}
                     </div> 

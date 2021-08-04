@@ -1,7 +1,7 @@
 <?php
     function email_validation($email){
       if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $msg = array('error' => "Invalid email !!!"); //etc
+        $msg = array('error' => "Invalid email !!!");
         echo json_encode($msg);
         die();
       }
@@ -31,6 +31,7 @@
     header('Access-Control-Allow-Origin: *');
     header("Access-Control-Allow-Headers: *");
 
+   
     include dirname(__DIR__)."/api/mysql/DBconnexion.php";
     include dirname(__DIR__)."/api/mysql/insert.php";
     include dirname(__DIR__)."/api/mysql/select.php";
@@ -38,11 +39,11 @@
     include dirname(__DIR__)."/api/verify_email/send_verification.php";
     include dirname(__DIR__)."/api/Models/Jwt.php";
     include dirname(__DIR__)."/api/Models/user_infos.php" ;
+    use user\User_infos as User_infos;
 
     $jwt = new Jwt_handler();
-
-    use user\User_infos as User_infos;
     $user=new User_infos();
+    
     $validation_key=rand(10000000, 99999999);
     $user->set_nom(@$_POST["nom"]);
     $user->set_prenom(@$_POST["prenom"]);
@@ -65,13 +66,11 @@
               if($valide_recaptcha){
                   if(insert_user_infos($user,$con)){
                       send_verf($user->get_email(),$validation_key);
-                      get_infos_user_by_email($user,$con);
-                      echo $jwt->jwt_encode_data($user);
                   }else{
                   }
               }
            }
           break;
     }  
-   
+
 ?>

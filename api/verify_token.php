@@ -1,6 +1,4 @@
 <?php
-
-
     function verify_token($headers,$jwt){
         $token='';
         foreach ($headers as $name => $value) {
@@ -11,13 +9,12 @@
             break;
             } 
         }
-        if(gettype($jwt->jwt_decode_data($token)) !== "array"){
+        if(gettype($jwt->jwt_decode_data($token)) != "array"){
             http_response_code(404);
         }else{
             return ($jwt->jwt_decode_data($token));
         }
          
     }
-
 
 ?>

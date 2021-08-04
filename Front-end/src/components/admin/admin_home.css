@@ -1,0 +1,40 @@
+.admin_home{
+    margin: auto;
+}
+
+.admin_home_header{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.table_container{
+    margin: 100px auto;
+}
+
+thead th {
+    color: black !important;
+    font-size: 12pt !important;
+    font-weight: 600 !important;
+}
+
+.form-check-input {
+    position : relative !important;
+}
+
+.w-100 {
+    width: 100%!important;
+    justify-content: flex-end;
+}
+
+.table_body{
+    color:gray;
+}
+
+.email_verified{
+    color:rgb(86, 212, 185) !important;
+}
+
+.email_not_verified{
+    color:crimson !important;
+}
